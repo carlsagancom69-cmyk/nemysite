@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Я — гений | Персональный сайт</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background: linear-gradient(145deg, #0b1120 0%, #19233c 100%);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            max-width: 1100px;
+            width: 100%;
+            background: rgba(18, 25, 45, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 3rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 55px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #ff7e5e, #feb47b, #6a11cb, #2575fc);
+            background-size: 200% 200%;
+            animation: gradientFlow 8s ease infinite;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .hero-link {
+            display: inline-block;
+            background: rgba(255,255,240,0.2);
+            backdrop-filter: blur(8px);
+            padding: 0.6rem 1.5rem;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+            border: 1px solid rgba(255,255,255,0.3);
+            margin-top: 0.5rem;
+        }
+
+        .hero-link:hover {
+            background: rgba(255,255,240,0.4);
+            transform: scale(1.02);
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #f0e6a0;
+            border-left: 4px solid #feb47b;
+            padding-left: 1rem;
+        }
+
+        .bio-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .avatar {
+            flex-shrink: 0;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(145deg, #2c3e66, #1b273f);
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            box-shadow: 0 15px 25px -8px rgba(0,0,0,0.4);
+            transition: transform 0.2s;
+        }
+
+        .avatar:hover {
+            transform: scale(1.02);
+        }
+
+        .bio-text {
+            flex: 1;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .bio-text p {
+            margin-bottom: 0.75rem;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .skill-badge {
+            background: rgba(255, 215, 120, 0.15);
+            border: 1px solid #ffd966;
+            padding: 0.4rem 1rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #ffeaaf;
+            transition: all 0.2s;
+        }
+
+        .skill-badge:hover {
+            background: #ffd966;
+            color: #1e2a3e;
+            transform: scale(1.05);
+            cursor: default;
+        }
+
+        .achievements-list {
+            list-style: none;
+        }
+
+        .achievements-list li {
+            margin-bottom: 0.7rem;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #cbd5e6;
+        }
+
+        .achievements-list li::before {
+            content: "🧬";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .project-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1.2rem;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-info h4 {
+            font-size: 1.2rem;
+            color: #ffeaaf;
+            margin-bottom: 0.3rem;
+        }
+
+        .project-info p {
+            font-size: 0.9rem;
+            color: #cbd5e6;
+        }
+
+        .project-link {
+            background: #2c5f8a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: 0.2s;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+
+        .project-link:hover {
+            background: #1e4668;
+            transform: scale(0.98);
+        }
+
+        .robot-takeover {
+            background: linear-gradient(120deg, #1e2a3e, #0f172a);
+            border: 1px solid #ffaa55;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .robot-takeover p {
+            color: #ffdd99;
+            font-size: 1rem;
+        }
+
+        .interactive-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 60px;
+            font-weight: bold;
+            color: #1e1e2a;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .interactive-btn:hover {
+            transform: scale(0.98);
+            background: linear-gradient(90deg, #ffb347, #ffdd77);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .fun-fact {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            color: #b9e6ff;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6a7c9e;
+            padding: 1.5rem 1rem 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 680px) {
+            .hero h1 { font-size: 2rem; }
+            .content { padding: 1.2rem; }
+            .bio-grid { flex-direction: column; text-align: center; }
+            .section-title { font-size: 1.3rem; }
+            .project-card { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hero">
+        <h1>✨ Я — будущий создатель ИИ ✨</h1>
+        <div class="tagline">гений, вундеркинд, математик, программист, бунтарь</div>
+        <a href="genetic_calculator.html" class="hero-link">🧬 Запустить генетический калькулятор (мой проект)</a>
+    </div>
+    <div class="content">
+        <!-- О себе -->
+        <div class="section">
+            <div class="section-title">
+                🧠 Обо мне
+            </div>
+            <div class="bio-grid">
+                <div class="avatar">
+                    🧬
+                </div>
+                <div class="bio-text">
+                    <p>Привет! Я тот, кто в 8 лет читал теорию относительности, а в 9 — Хокинга. Школьные лекции по неврологии, физике и эволюционной биологии? Легко. Сейчас я осваиваю высшую математику, программирование и генетику, чтобы создать технологии будущего.</p>
+                    <p>🎯 Моя цель: избавить человечество от старости, создать сильный ИИ и построить компанию, которая перевернёт мир.</p>
+                    <div class="skills">
+                        <span class="skill-badge">Математическая логика</span>
+                        <span class="skill-badge">Теория игр</span>
+                        <span class="skill-badge">Python / JS</span>
+                        <span class="skill-badge">Генетика & биоинформатика</span>
+                        <span class="skill-badge">Теорема Байеса</span>
+                        <span class="skill-badge">Критерий Келли</span>
+                        <span class="skill-badge">Дворец памяти</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Суперсилы -->
+        <div class="section">
+            <div class="section-title">
+                ⚡ Мои козыри
+            </div>
+            <div class="bio-text">
+                <ul class="achievements-list">
+                    <li>Абсолютная память и мнемотехника: «дворец памяти» в виде крепости посреди океана</li>
+                    <li>Математическое мышление: вижу мир через формулы, теоремы Гёделя, байесовский вывод</li>
+                    <li>Стратегия 10 лет: принимаю решения, оглядываясь на десятилетие вперёд</li>
+                    <li>Программирую собственные генетические калькуляторы и AI-модели</li>
+                    <li>Читаю университетские лекции с 9 класса</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Мой проект: генетический калькулятор (акцент) -->
+        <div class="section">
+            <div class="section-title">
+                🔬 Мой проект — Генетический калькулятор
+            </div>
+            <div class="project-card">
+                <div class="project-info">
+                    <h4>🧬 Решение задач по генетике в один клик</h4>
+                    <p>Моногибридное, дигибридное скрещивание, кумулятивная полимерия (3 гена). Сделано на чистом HTML/CSS/JS, без сервера. Ты можешь пользоваться прямо сейчас.</p>
+                </div>
+                <a href="calculator.html" class="project-link">🚀 Открыть калькулятор</a>
+            </div>
+        </div>
+
+        <!-- Достижения и планы -->
+        <div class="section">
+            <div class="section-title">
+                🚀 Планы на завтра и на десятилетие
+            </div>
+            <div class="bio-text">
+                <p>✅ Закончил базовый генетический калькулятор (HTML/CSS/JS) — работает!<br>
+                ✅ Осваиваю numpy, pandas, matplotlib для анализа данных.<br>
+                🔜 Поступление в магистратуру по Computer Science / AI в Европе.<br>
+                🔜 Создание компании по разработке AI для борьбы со старением.<br>
+                🔜 $500k инвестиций для стартапа — накоплю через пассивное инвестирование и количественную торговлю.</p>
+            </div>
+        </div>
+
+        <!-- Блок про захват роботов с интерактивом -->
+        <div class="section robot-takeover">
+            <div class="section-title" style="border-left-color: #ffaa55;">
+                🤖 Когда роботы нас захватят?
+            </div>
+            <p>По моим расчётам, сначала они попросят чай, потом оптимизируют логистику, а затем… но я буду среди тех, кто проектирует их сознание. Шутка?.. Или нет?</p>
+            <button id="robotBtn" class="interactive-btn">🤔 Узнать дату захвата</button>
+            <div id="funFact" class="fun-fact" style="display: none;">
+                ⏳ Расчёт: через 23 года, 5 месяцев и 7 дней. Но ты успеешь стать их повелителем 😎
+            </div>
+        </div>
+
+        <!-- ещё интерактив: кнопка "Привет из будущего" -->
+        <div style="text-align: center; margin-top: 0.5rem;">
+            <button id="futureBtn" class="interactive-btn" style="background: linear-gradient(90deg, #2c5f8a, #4c9aff);">🧠 Привет из моего дворца памяти</button>
+            <div id="memoryMessage" class="fun-fact" style="display: none; margin-top: 0.8rem;">
+                «Твоя крепость знаний построена на теореме Гёделя. Внутри — все прочитанные книги по физике, математике и генетике. Помни: каждое утро ты поднимаешься на крышу и сбрасываешь лишние тревоги в океан.»
+            </div>
+        </div>
+
+        <footer>
+            © 2026 • Гений в разработке • Сайт сделан本人的 интеллектом и золотой рыбкой
+        </footer>
+    </div>
+</div>
+
+<script>
+    // Интерактив для кнопки роботов
+    const robotBtn = document.getElementById('robotBtn');
+    const funFactDiv = document.getElementById('funFact');
+    robotBtn.addEventListener('click', () => {
+        if (funFactDiv.style.display === 'none' || funFactDiv.style.display === '') {
+            funFactDiv.style.display = 'block';
+            robotBtn.textContent = '🗓️ Скрыть пророчество';
+        } else {
+            funFactDiv.style.display = 'none';
+            robotBtn.textContent = '🤔 Узнать дату захвата';
+        }
+    });
+
+    // Кнопка дворца памяти
+    const futureBtn = document.getElementById('futureBtn');
+    const memoryMsg = document.getElementById('memoryMessage');
+    futureBtn.addEventListener('click', () => {
+        if (memoryMsg.style.display === 'none' || memoryMsg.style.display === '') {
+            memoryMsg.style.display = 'block';
+            futureBtn.textContent = '🏰 Закрыть дворец';
+        } else {
+            memoryMsg.style.display = 'none';
+            futureBtn.textContent = '🧠 Привет из моего дворца памяти';
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Генетический калькулятор: моногибридное, дигибридное скрещивание и полимерия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* карточка калькулятора */
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .card-header {
+            background: #1e2a3e;
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .card-header p {
+            margin-top: 0.5rem;
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* выбор типа задачи */
+        .task-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .task-btn {
+            background: #eef2f7;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1e2a3e;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .task-btn.active {
+            background: #2c5f8a;
+            color: white;
+            box-shadow: 0 4px 12px rgba(44,95,138,0.3);
+        }
+
+        .task-btn:hover:not(.active) {
+            background: #d4e0ec;
+            transform: translateY(-2px);
+        }
+
+        /* панели ввода для разных режимов */
+        .input-panel {
+            background: #f8fafc;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2edf7;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #0f2b3d;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-family: monospace;
+            background: white;
+            transition: 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2c5f8a;
+            box-shadow: 0 0 0 3px rgba(44,95,138,0.2);
+        }
+
+        .gene-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: end;
+        }
+
+        .example-hint {
+            font-size: 0.8rem;
+            color: #4b6b8a;
+            margin-top: 0.3rem;
+        }
+
+        button.calc-btn {
+            background: #2c5f8a;
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        button.calc-btn:hover {
+            background: #1e4668;
+            transform: scale(0.98);
+        }
+
+        .result-area {
+            margin-top: 2rem;
+            background: #ffffffdd;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid #cfdfed;
+            overflow-x: auto;
+        }
+
+        .result-area h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #1e2a3e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            border: 1px solid #cbdbe0;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #e6f0fa;
+            font-weight: 600;
+        }
+
+        .footer-note {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            text-align: center;
+            color: #5f7e9e;
+        }
+
+        @media (max-width: 700px) {
+            .card-body { padding: 1rem; }
+            .gene-row { grid-template-columns: 1fr; }
+            .task-btn { padding: 0.5rem 1rem; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="calculator-card">
+        <div class="card-header">
+            <h1>🧬 Генетический калькулятор</h1>
+            <p>Моногибридное • Дигибридное • Полимерия (3 гена)</p>
+        </div>
+        <div class="card-body">
+            <!-- Выбор режима -->
+            <div class="task-selector">
+                <button data-mode="mono" class="task-btn active">🧬 Моногибридное (1 ген)</button>
+                <button data-mode="di" class="task-btn">🧬🧬 Дигибридное (2 гена)</button>
+                <button data-mode="poly" class="task-btn">🌾 Полимерия (3 гена, кумулятивная)</button>
+            </div>
+
+            <!-- Динамическая панель ввода -->
+            <div id="input-panel" class="input-panel">
+                <!-- сюда js подставит поля ввода -->
+            </div>
+
+            <button id="runCalc" class="calc-btn">🧬 Рассчитать</button>
+
+            <div id="result" class="result-area">
+                <h3>📊 Результаты</h3>
+                <p style="color: #7a8e9e;">Выберите тип задачи и введите данные, затем нажмите «Рассчитать».</p>
+            </div>
+            <div class="footer-note">
+                ⚡ Полное доминирование для ди- и моногибридного. Полимерия: фенотип = количество доминантных аллелей.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // -------- Вспомогательные функции для генетики --------
+
+    // Генерирует все возможные генотипы потомства для данного набора локусов (список генотипов родителей по каждому локусу)
+    // Родители заданы списком: для каждого локуса строка генотипа родителя1 и родителя2 (например "Aa" и "Aa")
+    // Возвращает массив строк генотипов (например ["AABB","AABb",...]) с частотами (объект Map)
+    function crossMultiLoci(parentalGenotypes) {
+        // parentalGenotypes: [{p1: "Aa", p2: "Aa"}, {p1: "BB", p2: "Bb"}, ...]
+        // Для каждого локуса строим распределение генотипов потомства (с частотами)
+        let locusDistributions = [];
+        for (let locus of parentalGenotypes) {
+            const p1 = locus.p1;
+            const p2 = locus.p2;
+            // гаметы (символы)
+            let gam1 = [p1[0], p1[1]];
+            let gam2 = [p2[0], p2[1]];
+            let combos = {};
+            for (let g1 of gam1) {
+                for (let g2 of gam2) {
+                    let alleles = [g1, g2];
+                    alleles.sort(); // A,a -> Aa (заглавная раньше)
+                    let gt = alleles[0] + alleles[1];
+                    combos[gt] = (combos[gt] || 0) + 1;
+                }
+            }
+            const total = 4;
+            let dist = [];
+            for (let [gt, count] of Object.entries(combos)) {
+                dist.push({ genotype: gt, prob: count / total });
+            }
+            locusDistributions.push(dist);
+        }
+        // Декартово произведение распределений по локусам
+        let result = new Map(); // ключ -> строка генотипа (склейка локусов), значение вероятность
+        function combine(idx, currentGeno, currentProb) {
+            if (idx === locusDistributions.length) {
+                result.set(currentGeno, (result.get(currentGeno) || 0) + currentProb);
+                return;
+            }
+            for (let item of locusDistributions[idx]) {
+                combine(idx + 1, currentGeno + item.genotype, currentProb * item.prob);
+            }
+        }
+        combine(0, "", 1);
+        return result;
+    }
+
+    // Функция для дигибридного скрещивания через общий механизм (2 локуса)
+    function dihybrid(parent1Geno, parent2Geno) {
+        // parent1Geno например "AaBb", parent2Geno "AaBb"
+        // разбиваем на локусы: ожидаем что генотип состоит из 2 букв на локус, без разделителей
+        // вариант AaBb -> локус1 Aa, локус2 Bb
+        if (parent1Geno.length !== 4 || parent2Geno.length !== 4) {
+            throw new Error("Для дигибридного скрещивания введите 4 символа (например AaBb)");
+        }
+        const locus1p1 = parent1Geno[0] + parent1Geno[1];
+        const locus2p1 = parent1Geno[2] + parent1Geno[3];
+        const locus1p2 = parent2Geno[0] + parent2Geno[1];
+        const locus2p2 = parent2Geno[2] + parent2Geno[3];
+        const loci = [
+            { p1: locus1p1, p2: locus1p2 },
+            { p1: locus2p1, p2: locus2p2 }
+        ];
+        const rawMap = crossMultiLoci(loci);
+        // Преобразуем в читаемый вид: для каждого сочетания генотипов (например "AABB") считаем вероятность
+        return rawMap;
+    }
+
+    // Моногибридное (1 локус)
+    function monohybrid(parent1, parent2) {
+        const loci = [{ p1: parent1, p2: parent2 }];
+        const rawMap = crossMultiLoci(loci);
+        return rawMap;
+    }
+
+    // Полимерия (3 гена, кумулятивная): возвращает распределение по количеству доминантных аллелей (0..6)
+    function polymericTrihybrid(parent1, parent2) {
+        // parent1 и parent2 - строки из 6 букв (A/a B/b C/c), например "AaBbCc"
+        if (parent1.length !== 6 || parent2.length !== 6) {
+            throw new Error("Для полимерии введите генотип из 6 символов, например AaBbCc");
+        }
+        // разбиваем на три локуса
+        let loci = [];
+        for (let i = 0; i < 3; i++) {
+            let p1Alleles = parent1[2*i] + parent1[2*i+1];
+            let p2Alleles = parent2[2*i] + parent2[2*i+1];
+            loci.push({ p1: p1Alleles, p2: p2Alleles });
+        }
+        const genotypeMap = crossMultiLoci(loci); // ключ: например "AABbcc" (6 символов)
+        // Подсчитываем количество доминантных аллелей в каждой комбинации
+        // Доминантный аллель — заглавная буква.
+        const polyCounts = new Map(); // ключ: число доминант (0-6), значение: сумма вероятностей
+        for (let [geno, prob] of genotypeMap.entries()) {
+            let dominantCount = 0;
+            for (let ch of geno) {
+                if (ch === ch.toUpperCase() && ch !== ch.toLowerCase()) {
+                    dominantCount++;
+                }
+            }
+            polyCounts.set(dominantCount, (polyCounts.get(dominantCount) || 0) + prob);
+        }
+        return polyCounts;
+    }
+
+    // -------- UI логика ----------
+    let currentMode = "mono"; // mono, di, poly
+
+    // Функция отрисовки панели ввода в зависимости от режима
+    function renderInputPanel() {
+        const panel = document.getElementById("input-panel");
+        if (currentMode === "mono") {
+            panel.innerHTML = `
+                <div class="input-group">
+                    <label>🧬 Генотип родителя 1 (например Aa, AA, aa):</label>
+                    <input type="text" id="p1" placeholder="Aa" value="Aa">
+                </div>
+                <div class="input-group">
+                    <label>🧬 Генотип родителя 2:</label>
+                    <input type="text" id="p2" placeholder="Aa" value="Aa">
+                </div>
+                <div class="example-hint">⭐ Используйте только латинские буквы. Заглавная = доминантный аллель, строчная = рецессивный.</div>
+            `;
+        }
+        else if (currentMode === "di") {
+            panel.innerHTML = `
+                <div class="input-group">
+                    <label>🧬 Родитель 1 (дигибрид, например AaBb):</label>
+                    <input type="text" id="p1_di" placeholder="AaBb" value="AaBb">
+                </div>
+                <div class="input-group">
+                    <label>🧬 Родитель 2 (дигибрид, например AaBb):</label>
+                    <input type="text" id="p2_di" placeholder="AaBb" value="AaBb">
+                </div>
+                <div class="example-hint">📌 Формат: 4 буквы (AABB, AaBb, aaBB...). Гены независимы, полное доминирование.</div>
+            `;
+        }
+        else { // poly
+            panel.innerHTML = `
+                <div class="input-group">
+                    <label>🌾 Родитель 1 (три гена, например AaBbCc):</label>
+                    <input type="text" id="p1_poly" placeholder="AaBbCc" value="AaBbCc">
+                </div>
+                <div class="input-group">
+                    <label>🌾 Родитель 2 (три гена, например AaBbCc):</label>
+                    <input type="text" id="p2_poly" placeholder="AaBbCc" value="AaBbCc">
+                </div>
+                <div class="example-hint">🧬 Полимерия (кумулятивная): фенотип определяется числом доминантных аллелей (0–6).</div>
+            `;
+        }
+    }
+
+    // Главный расчет
+    function calculate() {
+        let resultHtml = "";
+        try {
+            if (currentMode === "mono") {
+                const p1 = document.getElementById("p1").value.trim();
+                const p2 = document.getElementById("p2").value.trim();
+                if (!/^[Aa]+$/i.test(p1) || !/^[Aa]+$/i.test(p2) || p1.length !== 2 || p2.length !== 2) {
+                    throw new Error("Генотипы должны состоять из двух букв A/a (например Aa)");
+                }
+                const dist = monohybrid(p1, p2);
+                resultHtml = `<h3>📊 Моногибридное скрещивание (${p1} × ${p2})</h3>
+                              <table>
+                                <thead><tr><th>Генотип</th><th>Вероятность</th><th>Фенотип</th></tr></thead>
+                                <tbody>`;
+                for (let [gen, prob] of dist.entries()) {
+                    const phen = gen.includes('A') ? "Доминантный" : "Рецессивный";
+                    resultHtml += `<tr><td>${gen}</td><td>${(prob*100).toFixed(2)}%</td><td>${phen}</td></tr>`;
+                }
+                resultHtml += `</tbody></table><p class="footer-note">Доминантный аллель — A (заглавная).</p>`;
+            }
+            else if (currentMode === "di") {
+                const p1 = document.getElementById("p1_di").value.trim().toUpperCase();
+                const p2 = document.getElementById("p2_di").value.trim().toUpperCase();
+                if (!/^[AB]+$/i.test(p1) || !/^[AB]+$/i.test(p2) || p1.length !== 4 || p2.length !== 4) {
+                    throw new Error("Дигибрид: введите 4 символа, используя буквы A/a и B/b (например AaBb)");
+                }
+                const dist = dihybrid(p1, p2);
+                resultHtml = `<h3>🧬 Дигибридное скрещивание (${p1} × ${p2})</h3>
+                              <table><thead><tr><th>Генотип (A_B_)</th><th>Вероятность</th><th>Фенотип</th></tr></thead><tbody>`;
+                for (let [gen, prob] of dist.entries()) {
+                    // форматируем генотип: gen[0]+gen[1] и gen[2]+gen[3]
+                    let genA = gen.substring(0,2);
+                    let genB = gen.substring(2,4);
+                    let phenA = (genA.includes('A') ? "Доминантный А" : "Рецессивный a");
+                    let phenB = (genB.includes('B') ? "Доминантный B" : "Рецессивный b");
+                    resultHtml += `<tr><td>${genA} ${genB}</td><td>${(prob*100).toFixed(2)}%</td><td>${phenA}, ${phenB}</td></tr>`;
+                }
+                resultHtml += `</tbody></table><p class="footer-note">Гены независимы, полное доминирование. Фенотипы раздельно по генам.</p>`;
+            }
+            else { // poly
+                const p1 = document.getElementById("p1_poly").value.trim();
+                const p2 = document.getElementById("p2_poly").value.trim();
+                if (!/^[ABC]+$/i.test(p1) || !/^[ABC]+$/i.test(p2) || p1.length !== 6 || p2.length !== 6) {
+                    throw new Error("Полимерия: введите 6 символов (например AaBbCc). Используйте буквы A,B,C и a,b,c");
+                }
+                const dist = polymericTrihybrid(p1, p2);
+                resultHtml = `<h3>🌾 Полимерия (кумулятивная, три гена) — ${p1} × ${p2}</h3>
+                              <table><thead><tr><th>Количество доминантных аллелей</th><th>Вероятность</th><th>Фенотипическое проявление</th></tr></thead><tbody>`;
+                for (let i = 0; i <= 6; i++) {
+                    let prob = dist.get(i) || 0;
+                    let description = "";
+                    if (i === 0) description = "Минимальный признак";
+                    else if (i === 6) description = "Максимальный признак";
+                    else description = `${i} доминантных аллелей`;
+                    resultHtml += `<tr><td>${i}</td><td>${(prob*100).toFixed(2)}%</td><td>${description}</td></tr>`;
+                }
+                resultHtml += `</tbody></table><p class="footer-note">Кумулятивная полимерия: каждый доминантный аллель усиливает признак.</p>`;
+            }
+            document.getElementById("result").innerHTML = resultHtml;
+        } catch (err) {
+            document.getElementById("result").innerHTML = `<h3>⚠️ Ошибка</h3><p style="color: #b33;">${err.message}</p>`;
+        }
+    }
+
+    // Смена режима
+    const btns = document.querySelectorAll(".task-btn");
+    btns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            btns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentMode = btn.getAttribute("data-mode");
+            renderInputPanel();
+            // сброс результата
+            document.getElementById("result").innerHTML = `<h3>📊 Результаты</h3><p style="color: #7a8e9e;">Введите данные и нажмите «Рассчитать».</p>`;
+        });
+    });
+
+    // Инициализация
+    renderInputPanel();
+    document.getElementById("runCalc").addEventListener("click", calculate);
+</script>
+</body>
+</html>
